@@ -1,1 +1,1 @@
-# [beachcodersacademy.github.io](beachcodersacademy.github.io)
+# [beachcodersacademy.github.io](http://beachcodersacademy.github.io/#)
