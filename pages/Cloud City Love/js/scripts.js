@@ -33,7 +33,9 @@ let $skinColor = $('#skin-color');
 
 let $matchesContainer = $('#matches-container');
 
-$('#find-love-btn').click(() => {
+$('#find-love-btn').click(() => {displayMatches()});
+
+function displayMatches() {
   
   // load the .gif image when the user clicks on button and append it to the #waiting div
   let imgWait =`<img src="assets/img/bb8.gif" class="wait"><h5 class=text-center>Finding your love!</h5>`;
@@ -142,67 +144,73 @@ $('#find-love-btn').click(() => {
         
         
         
-      });
-      
-      //convert kg to lb
-      function kilogramsToPounds(n) {
-        return (n/0.4536).toFixed(1);
       }
-      
-      //convert cm to feet and inches
-      function cmToFeet(n) {
-        var realFeet = ((n*0.393700) / 12);
-        var feet = Math.floor(realFeet);
-        var inches = Math.round((realFeet - feet) * 12);
-        return feet + "&prime;" + inches + '&Prime;';
-      }
-      
-      // Search-Btn-Feature Start //
-      $('#search-by-name-btn').on('click', () => {
-        displayResult();
-      });
-      
-      $('#query').keypress(e => {
-        if (e.key === 'Enter') displayResult();
-      });
-      
-      function displayResult() {
-        let query = $('#query').val();
-        $('#query').val('');
-        // alert(query);
-        
-        let url = 'https://swapi.co/api/people/?search=' + query;
-        
-        $.getJSON(url, function(data) {
-          
-          console.log(data);
-          // $('#matches-container').append(data);
-        });
-      };
-      
-      /*
-      CRUD Operations
-      
-      Create -> POST
-      Read -> GET
-      Update -> PUT
-      Delete -> REMOVE
-      
-      Strongly Typed Languages
-      Javascript -> Weakly Typed  
-      */
-      
-      if (annyang) {
-        // Let's define our first command. First the text we expect, and then the function it should call
-        var commands = {
-          'find love': function() {
-            responsiveVoice.speak(`Looking for love!`);
-          }
-        };
-        
-        // Add our commands to annyang
-        annyang.addCommands(commands);
-        
-        // Start listening. You can call this here, or attach this call to an event, button, etc.
-        annyang.start();
-      }
+
+//convert kg to lb
+function kilogramsToPounds(n) {
+  return (n/0.4536).toFixed(1);
+}
+
+//convert cm to feet and inches
+function cmToFeet(n) {
+  var realFeet = ((n*0.393700) / 12);
+  var feet = Math.floor(realFeet);
+  var inches = Math.round((realFeet - feet) * 12);
+  return feet + "&prime;" + inches + '&Prime;';
+}
+
+// Search-Btn-Feature Start //
+$('#search-by-name-btn').on('click', () => {
+  displayResult();
+});
+
+$('#query').keypress(e => {
+  if (e.key === 'Enter') displayResult();
+});
+
+function displayResult() {
+  let query = $('#query').val();
+  $('#query').val('');
+  // alert(query);
+  
+  let url = 'https://swapi.co/api/people/?search=' + query;
+  
+  $.getJSON(url, function(data) {
+    
+    console.log(data);
+    // $('#matches-container').append(data);
+  });
+};
+
+/*
+CRUD Operations
+
+Create -> POST
+Read -> GET
+Update -> PUT
+Delete -> REMOVE
+
+Strongly Typed Languages
+Javascript -> Weakly Typed  
+*/
+
+if (annyang) {
+  // Let's define our first command. First the text we expect, and then the function it should call
+  var commands = {
+    '(look) (search) (find) (for) love': function() {
+      responsiveVoice.speak(`Looking for love!`);
+      displayMatches();
+    },
+    'search for :name': function(name) {
+      responsiveVoice.speak(`Searching for ${name}`);
+      $('#query').val(name);
+      displayResult();
+    }
+  };
+  
+  // Add our commands to annyang
+  annyang.addCommands(commands);
+  
+  // Start listening. You can call this here, or attach this call to an event, button, etc.
+  annyang.start();
+}
