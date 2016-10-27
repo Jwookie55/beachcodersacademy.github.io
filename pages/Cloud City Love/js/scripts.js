@@ -205,6 +205,10 @@ if (annyang) {
       responsiveVoice.speak(`Searching for ${name}`);
       $('#query').val(name);
       displayResult();
+    },
+    'height :start to :end (centimeters)': function(start, end) {
+      $fromHeight.val(start);
+      $toHeight.val(end);
     }
   };
   
@@ -214,3 +218,5 @@ if (annyang) {
   // Start listening. You can call this here, or attach this call to an event, button, etc.
   annyang.start();
 }
+
+console.log('done');
