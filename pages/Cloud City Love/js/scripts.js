@@ -178,7 +178,11 @@ function displayResult() {
   $.getJSON(url, function(data) {
     
     console.log(data);
-    // $('#matches-container').append(data);
+    
+    // get container to attach it to
+    $('#matches-container').append(data);
+    
+    
   });
 };
 
