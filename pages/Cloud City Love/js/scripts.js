@@ -32,10 +32,18 @@ let $hairColor = $('#hair-color');
 let $skinColor = $('#skin-color');
 
 let $matchesContainer = $('#matches-container');
+let $paginationContainer = $('#pagination-container');
+
+const MAX_RESULTS = 5;
+let matches;
+let currentIndex;
 
 $('#find-love-btn').click(() => {displayMatches()});
 
 function displayMatches() {
+  
+  matches = [];
+  currentIndex = 0;
   
   // load the .gif image when the user clicks on button and append it to the #waiting div
   let imgWait =`<img src="assets/img/bb8.gif" class="wait"><h5 class=text-center>Finding your love!</h5>`;
@@ -52,8 +60,6 @@ function displayMatches() {
   let gender = $gender.val();
   let hairColor = $hairColor.val() ? $hairColor.val() : 'any';
   let skinColor = $skinColor.val() ? $skinColor.val() : 'any';
-  
-  let matches = [];
   
   for (let i = 1; i <= 9; i++) {
     
@@ -101,7 +107,7 @@ function displayMatches() {
       //when we print the results we don't want the .gif image anymore, so we empty it
       $('#waiting').empty(imgWait);
       
-      console.log(matches);
+      // console.log(matches);
       
       // need to check if matches is empty to display something like "No match was found"
       
@@ -115,7 +121,9 @@ function displayMatches() {
           responsiveVoice.speak(`We found ${matches.length} matches for you!`);
           
           // put matches on screen
-          matches.forEach(person => {
+          for (let i = 0; i < MAX_RESULTS; i++) {
+            
+            let person = matches[i];
             
             let name = person.name;
             // TODO: get image url
@@ -130,14 +138,18 @@ function displayMatches() {
             let heightFeet = cmToFeet(height);
             
             $matchesContainer.append(`
-              <h2>${name}</h2>
+              <h2>${i + 1}: ${name}</h2>
               <p><small>${gender}</small></p>
               <img src="" alt="${name}" />
               <p>Height: ${heightFeet} | Weight: ${weightLb} lb</p>
               <p>Hair Color: ${hairColor} | Skin Color: ${skinColor}</p>
               `);
               
-            });
+            }
+                        
+            // TODO: show pagination
+            $('#next-btn').removeClass('invisible');
+            
           }
           
         }, 4000); //Change it to 4s cause it wasn't finding everyone sometimes
@@ -168,7 +180,12 @@ $('#query').keypress(e => {
   if (e.key === 'Enter') displayResult();
 });
 
+let people;
+
 function displayResult() {
+  
+  $matchesContainer.empty();
+  
   let query = $('#query').val();
   $('#query').val('');
   // alert(query);
@@ -177,14 +194,177 @@ function displayResult() {
   
   $.getJSON(url, function(data) {
     
-    console.log(data);
+    // get the array of people
+    people = data.results;
     
-    // get container to attach it to
-    $('#matches-container').append(data);
-    
+    // for each person in the array put them on the screen
+    // people.forEach(person => {
+      
+    for (let i = 0; i < MAX_RESULTS; i++) {
+      
+      let person = people[i];
+      
+      let name = person.name;
+      // TODO: get image url
+      // let imgURL =
+      let gender = person.gender;
+      let height = person.height;
+      let weight = person.mass;
+      let hairColor = person.hair_color;
+      let skinColor = person.skin_color;
+      
+      let weightLb = kilogramsToPounds(weight);
+      let heightFeet = cmToFeet(height);
+      
+      $matchesContainer.append(`
+        <h2>${i + 1}: ${name}</h2>
+        <p><small>${gender}</small></p>
+        <img src="" alt="${name}" />
+        <p>Height: ${heightFeet} | Weight: ${weightLb} lb</p>
+        <p>Hair Color: ${hairColor} | Skin Color: ${skinColor}</p>
+        `);
+        
+      }
+      
+      currentIndex += MAX_RESULTS;
     
   });
 };
+/*
+const MAX_RESULTS = 5
+let matches = []
+let currentIndex = 0
+*/
+$('#prev-btn').click(() => {
+  
+  if (currentIndex - MAX_RESULTS >= 0) {
+    
+    currentIndex -= MAX_RESULTS;
+    
+    // TODO: don't display if there is no previous/next
+
+    $matchesContainer.empty('');
+    // put matches on screen
+    for (let i = currentIndex; i < (currentIndex + MAX_RESULTS); i++) {
+      
+      let person = matches[i];
+      
+      let name = person.name;
+      // TODO: get image url
+      // let imgURL =
+      let gender = person.gender;
+      let height = person.height;
+      let weight = person.mass;
+      let hairColor = person.hair_color;
+      let skinColor = person.skin_color;
+      
+      let weightLb = kilogramsToPounds(weight);
+      let heightFeet = cmToFeet(height);
+      
+      $matchesContainer.append(`
+        <h2>${i + 1}: ${name}</h2>
+        <p><small>${gender}</small></p>
+        <img src="" alt="${name}" />
+        <p>Height: ${heightFeet} | Weight: ${weightLb} lb</p>
+        <p>Hair Color: ${hairColor} | Skin Color: ${skinColor}</p>
+        `);
+        
+      }
+      
+      $('#next-btn').removeClass('invisible');
+    
+    } else if (currentIndex === matches.length -1) {
+
+      currentIndex -= currentIndex % MAX_RESULTS;
+    
+    } else {
+      $('#prev-btn').addClass('invisible');
+    }
+    
+});
+
+$('#next-btn').click(() => {
+  
+  currentIndex += MAX_RESULTS;
+
+  if (currentIndex + MAX_RESULTS <= matches.length) {
+    $matchesContainer.empty('');
+    // put matches on screen
+    for (let i = currentIndex; i < (currentIndex + MAX_RESULTS); i++) {
+      
+      let person = matches[i];
+      
+      let name = person.name;
+      // TODO: get image url
+      // let imgURL =
+      let gender = person.gender;
+      let height = person.height;
+      let weight = person.mass;
+      let hairColor = person.hair_color;
+      let skinColor = person.skin_color;
+      
+      let weightLb = kilogramsToPounds(weight);
+      let heightFeet = cmToFeet(height);
+      
+      $matchesContainer.append(`
+        <h2>${i + 1}: ${name}</h2>
+        <p><small>${gender}</small></p>
+        <img src="" alt="${name}" />
+        <p>Height: ${heightFeet} | Weight: ${weightLb} lb</p>
+        <p>Hair Color: ${hairColor} | Skin Color: ${skinColor}</p>
+        `);
+        
+      }
+      
+      currentIndex += MAX_RESULTS;
+      
+      $('#prev-btn').removeClass('invisible');
+    
+    } else if (currentIndex + MAX_RESULTS > matches.length 
+      && currentIndex + MAX_RESULTS < matches.length + MAX_RESULTS) {
+      // display if matches.length is not divisible by MAX_RESULTS
+      /*
+      currentIndex: 50
+      MAX_RESULTS: 5
+      matches.length: 51
+      matches.length + MAX_RESULTS: 56
+      */
+      
+        $matchesContainer.empty('');
+        // put matches on screen
+        for (let i = currentIndex; i < matches.length; i++) {
+          
+          let person = matches[i];
+          
+          let name = person.name;
+          // TODO: get image url
+          // let imgURL =
+          let gender = person.gender;
+          let height = person.height;
+          let weight = person.mass;
+          let hairColor = person.hair_color;
+          let skinColor = person.skin_color;
+          
+          let weightLb = kilogramsToPounds(weight);
+          let heightFeet = cmToFeet(height);
+          
+          $matchesContainer.append(`
+            <h2>${i + 1}: ${name}</h2>
+            <p><small>${gender}</small></p>
+            <img src="" alt="${name}" />
+            <p>Height: ${heightFeet} | Weight: ${weightLb} lb</p>
+            <p>Hair Color: ${hairColor} | Skin Color: ${skinColor}</p>
+            `);
+            
+          }
+          
+          currentIndex = matches.length-1;
+                    
+          $('#next-btn').addClass('invisible');
+    
+}
+
+});
 
 /*
 CRUD Operations
@@ -222,5 +402,3 @@ if (annyang) {
   // Start listening. You can call this here, or attach this call to an event, button, etc.
   annyang.start();
 }
-
-console.log('done');
