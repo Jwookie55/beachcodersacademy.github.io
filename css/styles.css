@@ -1,89 +1,81 @@
-/* tag selector */
-/* selects all instances of this tag */
-
-/* universal selector */
-*{
+body {
   font-family: 'Raleway', sans-serif;
-}
-
-body{
-  /*hexadecimal*/
   background-color:#6DA5A5;
   margin:0;
   color:white;
 }
 
-img{
+img {
   width:350px;
 }
 
-form{
+form {
   padding:15px;
   text-align:center;
   max-width:650px;
   margin:0 auto;
 }
 
-input:not([type="radio"]), textarea{
+input:not([type="radio"]), textarea {
   height:45px;
   width:100%;
   font-size:30px;
 }
 
-input[type="submit"]{
+input[type="submit"] {
   margin-top:15px;
 }
 
-textarea{
+textarea {
   height:250px;
   resize:none;
 }
 
 /* class selector */
-.github-info a{
+.github-info a {
   text-decoration: none;
   color:white;
 }
 
-.github-info a:hover{
+.github-info a:hover {
   color:darkgrey;
 }
 
-.github-info a:active{
+.github-info a:active {
   color:lightgrey;
 }
 
-.github-img{
+.github-img {
   width:25px;
 }
 
-.github-info{
+.github-info {
   position: relative;
   top: 18px;
 }
 
-.no-padding{
+.no-padding {
   padding:0;
 }
 
-.footer{
+.footer {
   background-color:black;
   width:100%;
   height:60px;
   margin-top:15px;
 }
-.project-img{
+.project-img {
   box-shadow:2px 2px 10px grey;
   width:350px;
   height:250px;
 }
 
 /* multi-element selector*/
-.navbar, .navbar-container, .navbar div{
+.navbar, .navbar-container, .navbar div {
   height:100px;
 }
 
-.navbar{
+.navbar {
   background-color:white;
   box-shadow:0px 5px 10px grey;
   width:100%;
@@ -93,7 +85,7 @@ textarea{
 }
 
 /* descendent selector */
-.navbar div{
+.navbar div {
   display:inline-block;
   width:100px;
   margin:0px -2px;
@@ -103,33 +95,26 @@ textarea{
 }
 
 /*pseudo-selector*/
-.navbar div:hover{
+.navbar div:hover {
   background-color:darkgrey;
 }
 
-.navbar div:active{
+.navbar div:active {
   background-color:lightgrey;
 }
 
 
-.center-text{
+.center-text {
   text-align:center;
 }
 
-.page-video{
+.page-video {
   /*centering trick!*/
   margin:0 auto;
   display:block;
 }
 
 /* id selector */
-#special-text{
+#special-text {
   color:fuchsia;
 }
-
-/* css specificity
-inline style
-id selector
-class selector
-tag selector
-*/

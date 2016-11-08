@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>YouTube</title>
+</head>
+
+<body>
+  
+  <h1>Search for YouTube data</h1>
+  <input id="query" type="text" autofocus=""> <button onclick="init()">Search</button>
+  <ul id="results"></ul>
+  
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <!--[if IE]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+  <script type="text/javascript">
+  
+  function makeRequest(q) {
+    let request = gapi.client.youtube.search.list({
+      q: q,
+      part: 'snippet',
+      maxResults: 10,
+      order: 'viewCount'
+    });
+    
+    
+    request.execute(function(response) {
+      let toDisplay = '';
+      
+      let resultItems = response.result.items;
+      
+      
+      resultItems.forEach((item, index) => {
+        
+        let vidId = response.items[index].id.videoId;
+        
+        let url = 'https://www.googleapis.com/youtube/v3/videos?part=contentDetails,statistics&key=AIzaSyCWzGO9Vo1eYOW4R4ooPdoFLmNk6zkc0Jw&id=' + vidId;
+        
+        $.getJSON(url, result => {
+          // console.log(result);
+          let stats = result.items[0].statistics;
+          
+          let viewCount = stats.viewCount;     
+          let likeCount = stats.likeCount;
+          let dislikeCount = stats.dislikeCount;
+          let commentCount = stats.commentCount;
+          
+          let vidTitle = `<h3>${item.snippet.title}</h3>`;
+          
+          let vidThumburl =  item.snippet.thumbnails.high.url;
+          let vidThumbimg = '<pre><img id="thumb" src="'+vidThumburl+'" alt="No  Image Available." style="width:204px;height:128px"></pre>';
+          let statsDiv = `<p>
+          <strong>View Count:</strong> ${numberWithCommas(viewCount)}<br />
+          <strong>Like Count:</strong> ${numberWithCommas(likeCount)}<br />
+          <strong>Dislike Count:</strong> ${numberWithCommas(dislikeCount)}<br />
+          <strong>Comment Count:</strong> ${numberWithCommas(commentCount)}
+          </p>`;
+          
+          // $('#results').append('<pre>' + vidTitle + vidThumbimg + statsDiv + '</pre>');
+          toDisplay += '<pre>' + vidTitle + vidThumbimg + statsDiv + '</pre>';
+          // toDisplay += 'poop';
+        }).then(() => {
+
+          $('#results').html(toDisplay);
+          
+        });
+        
+      });
+      
+      // $('#results').empty();
+      
+    });    
+    
+  }
+  
+  function init() {
+    gapi.client.setApiKey('AIzaSyCWzGO9Vo1eYOW4R4ooPdoFLmNk6zkc0Jw');
+    gapi.client.load('youtube', 'v3', function() {
+      $('#results').empty();
+      $('#results').html(
+        '<img src=loading.gif />'
+      );
+      let term = $('#query').val();
+      makeRequest(term);
+    });
+  }
+  
+  function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+  
+  </script>
+  
+  <script type="text/javascript" src="https://apis.google.com/js/client.js"></script>
+</body>
+</html>
